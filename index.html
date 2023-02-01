@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detector de controlador MIDI</title>
+  </head>
+  <body>
+    <h1 id="midi-info"></h1>
+    <script>
+      let midiAccess = null;
+
+      function updateMidiInfo() {
+        if (!midiAccess) {
+          navigator
+            .requestMIDIAccess()
+            .then((access) => {
+              console.log("MIDI ready!");
+              midiAccess = access;
+              let output = null;
+              const inputs = access.inputs;
+              const outputs = access.outputs;
+
+              access.onstatechange = (e) => {
+                console.log(
+                  `El controlador MIDI "${e.port.name}" ha sido ${
+                    e.port.state === "connected" ? "conectado" : "desconectado"
+                  }.`
+                );
+                updateMidiInfo();
+              };
+
+              // detect if any MIDI controllers are connected
+              if (inputs.size === 0 && outputs.size === 0) {
+                document.querySelector("#midi-info").innerText =
+                  "No se ha conectado ningún controlador MIDI";
+              } else {
+                // get the first connected MIDI controller
+                for (const input of inputs.values()) {
+                  output = input;
+                  break;
+                }
+                for (const out of outputs.values()) {
+                  output = out;
+                  break;
+                }
+                document.querySelector("#midi-info").innerText =
+                  "Modelo del controlador MIDI: " + output.name;
+              }
+            })
+            .catch((error) => {
+              console.error("Could not access your MIDI devices", error);
+              document.querySelector("#midi-info").innerText =
+                "Error al acceder a los dispositivos MIDI";
+            });
+        } else {
+          let output = null;
+          const inputs = midiAccess.inputs;
+          const outputs = midiAccess.outputs;
+
+          // detect if any MIDI controllers are connected
+          if (inputs.size === 0 && outputs.size === 0) {
+            document.querySelector("#midi-info").innerText =
+              "No se ha conectado ningún controlador MIDI";
+          } else {
+            // get the first connected MIDI controller
+            for (const input of inputs.values()) {
+              output = input;
+              break;
+            }
+            for (const out of outputs.values()) {
+              output = out;
+              break;
+            }
+            document.querySelector("#midi-info").innerText =
+              "Modelo del controlador MIDI: " + output.name;
+          }
+        }
+      }
+
+      updateMidiInfo();
+    </script>
+  </body>
+</html>
