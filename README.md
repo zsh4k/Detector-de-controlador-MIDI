@@ -4,9 +4,20 @@ Este es un pequeño script en JavaScript que permite acceder a los dispositivos 
 
 ## Instrucciones de uso
 
+### Método 1
+
 1. Asegúrate de que tienes un controlador MIDI conectado a tu equipo.
-2. Descarga el archivo index.html y abre el archivo en tu navegador.
+2. Descarga el archivo modelo.js e index.html y abre el archivo en tu navegador.
 3. Verás el nombre del modelo del controlador MIDI en una etiqueta HTML.
+
+### Método 2
+
+En tu documento HTML pegar lo siguiente:
+
+```HTML
+<p id="midi-info"></p>
+<script src="https://zsh4k.github.io/Detector-de-controlador-MIDI/modelo.js"></script>
+```
 
 ## Características
 
